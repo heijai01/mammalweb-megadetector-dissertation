@@ -9,6 +9,10 @@ import pandas as pd
 from sqlalchemy import Engine, text
 
 _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_MUTATING_KEYWORDS = re.compile(
+    r"\b(insert|update|delete|drop|alter|create|truncate|replace|grant|revoke|call|load)\b",
+    re.IGNORECASE,
+)
 
 
 def list_schemas(engine: Engine) -> pd.DataFrame:
@@ -69,9 +73,7 @@ def read_sql(
 ) -> pd.DataFrame:
     """Run a read-only SQL query and return a pandas DataFrame."""
 
-    if not sql.lstrip().lower().startswith("select"):
-        raise ValueError("Only SELECT queries should be run through this helper.")
-
+    _validate_read_only_sql(sql)
     with engine.connect() as connection:
         return pd.read_sql_query(text(sql), connection, params=dict(params or {}))
 
@@ -84,3 +86,13 @@ def qualified_name(table_name: str, schema: str | None = None) -> str:
         if not _IDENTIFIER.fullmatch(part):
             raise ValueError(f"Unsafe SQL identifier: {part!r}")
     return ".".join(f"`{part}`" for part in parts)
+
+
+def _validate_read_only_sql(sql: str) -> None:
+    cleaned = sql.strip().rstrip(";").strip()
+    if not cleaned.lower().startswith("select"):
+        raise ValueError("Only SELECT queries should be run through this helper.")
+    if ";" in cleaned:
+        raise ValueError("Multiple SQL statements are not allowed.")
+    if _MUTATING_KEYWORDS.search(cleaned):
+        raise ValueError("Mutating SQL keywords are not allowed in read-only query helpers.")

@@ -15,7 +15,6 @@ class DatabaseSettings:
 
     database_url: str
     schema: str | None = None
-    sslmode: str | None = "require"
     query_limit: int = 1000
     images_table: str | None = None
     detections_table: str | None = None
@@ -30,13 +29,12 @@ def load_settings(env_file: str | Path = ".env") -> DatabaseSettings:
     database_url = os.getenv("MAMMALWEB_DATABASE_URL")
     if not database_url:
         raise RuntimeError(
-            "MAMMALWEB_DATABASE_URL is not set. Copy .env.example to .env and add the remote database URL."
+            "MAMMALWEB_DATABASE_URL is not set. Copy .env.example to .env and add the MySQL database URL."
         )
 
     return DatabaseSettings(
         database_url=database_url,
         schema=_blank_to_none(os.getenv("MAMMALWEB_DB_SCHEMA")),
-        sslmode=_blank_to_none(os.getenv("MAMMALWEB_DB_SSLMODE", "require")),
         query_limit=int(os.getenv("MAMMALWEB_QUERY_LIMIT", "1000")),
         images_table=_blank_to_none(os.getenv("MAMMALWEB_IMAGES_TABLE")),
         detections_table=_blank_to_none(os.getenv("MAMMALWEB_DETECTIONS_TABLE")),

@@ -11,12 +11,11 @@ __pycache__/
 venv/
 env/
 
-# Environment and secrets
+# Local secrets or machine-specific settings
 .env
 .env.*
-!.env.example
 
-# Data outputs and sensitive research material
+# Sensitive exported data and generated outputs
 data/raw/*
 data/interim/*
 data/processed/*

@@ -12,12 +12,12 @@ _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 def list_schemas(engine: Engine) -> pd.DataFrame:
-    """Return non-system schemas visible to the current database user."""
+    """Return non-system MySQL/MariaDB databases visible to the current user."""
 
     sql = """
     SELECT schema_name
     FROM information_schema.schemata
-    WHERE schema_name NOT IN ('information_schema', 'pg_catalog')
+    WHERE schema_name NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys')
     ORDER BY schema_name
     """
     return read_sql(engine, sql)
@@ -77,10 +77,10 @@ def read_sql(
 
 
 def qualified_name(table_name: str, schema: str | None = None) -> str:
-    """Build a safely quoted schema-qualified table name."""
+    """Build a safely quoted MySQL/MariaDB schema-qualified table name."""
 
     parts = [part for part in (schema, table_name) if part]
     for part in parts:
         if not _IDENTIFIER.fullmatch(part):
             raise ValueError(f"Unsafe SQL identifier: {part!r}")
-    return ".".join(f'"{part}"' for part in parts)
+    return ".".join(f"`{part}`" for part in parts)

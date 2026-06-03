@@ -8,26 +8,45 @@ Focus areas:
 - Privacy/safeguarding implications
 - False positive and false negative trade-offs
 
-## Safe database configuration
+## Current workflow
 
-The MammalWeb database appears to be accessed through phpMyAdmin, so this workflow assumes a MySQL/MariaDB database using SQLAlchemy with the `pymysql` driver.
+Direct Python access to the remote MammalWeb database may be blocked by network or security restrictions. For now, this repository uses a simpler manual-export workflow:
 
-1. Install the Python dependencies:
+```text
+phpMyAdmin -> SQL query -> export CSV -> local pandas analysis -> threshold evaluation and visualisation
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Using CSV exports safely
 
-2. Copy the example environment file locally:
+1. In phpMyAdmin, run a focused SQL query that returns only the columns needed for analysis.
+2. Export the result as a CSV file.
+3. Place the CSV file in `data/raw/` on your local machine.
+4. Use the notebook `notebooks/01_database_export_exploration.ipynb` to load, inspect, and analyse the export.
+5. Save cleaned or derived CSV files to `data/processed/` if needed.
 
-   ```bash
-   cp .env.example .env
-   ```
+Do not commit real exported data if it may contain sensitive information, human image metadata, locations, filenames, or other identifiable details. The `.gitignore` file keeps `data/raw/*` and `data/processed/*` ignored, except for `.gitkeep` placeholders.
 
-3. Add the real database connection URL to `.env` only:
+## Setup
 
-   ```text
-   MAMMALWEB_DATABASE_URL=mysql+pymysql://username:password@host:3306/database_name
-   ```
+Install the Python dependencies:
 
-Do not commit `.env`, database passwords, exported tables, or sensitive image metadata. The `.gitignore` file is set up to ignore `.env` and local data/output folders. The query utilities in `src/mammalweb_db/queries.py` are intended for read-only `SELECT` queries during exploratory analysis.
+```bash
+pip install -r requirements.txt
+```
+
+The main helper modules are:
+
+- `src/mammalweb_analysis/io.py` for loading exported CSV files.
+- `src/mammalweb_analysis/thresholds.py` for MegaDetector threshold metrics.
+
+## Suggested CSV columns
+
+The exact database schema may vary, so adapt the names in the notebook. Useful exports for threshold analysis usually include:
+
+- an image or record identifier
+- MegaDetector human confidence score
+- ground-truth human label or review outcome
+- optional animal/wildlife label
+- optional human-risk category, if available
+
+Keep exports small and purposeful while developing the workflow.

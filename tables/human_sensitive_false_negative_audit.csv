@@ -1,0 +1,10 @@
+threshold,total_human_n,total_human_missed_n,benign_human_missed_n,privacy_sensitive_human_missed_n,safeguarding_sensitive_human_missed_n,any_sensitive_human_missed_n,recognisable_human_missed_n,sensitive_share_of_human_misses,missed_human_recognisability_ge_1_n,missed_human_privacy_risk_ge_1_n,missed_child_or_vulnerable_yes_or_uncertain_n,missed_safeguarding_risk_ge_1_n
+0.01,108,1,0,1,0,1,1,1.0,1,1,0,0
+0.05,108,11,7,3,1,4,4,0.36363636363636365,4,4,1,0
+0.1,108,17,10,4,3,7,5,0.4117647058823529,5,5,3,0
+0.2,108,17,10,4,3,7,5,0.4117647058823529,5,5,3,0
+0.25,108,17,10,4,3,7,5,0.4117647058823529,5,5,3,0
+0.3,108,20,12,5,3,8,6,0.4,6,6,3,0
+0.5,108,27,17,7,3,10,8,0.37037037037037035,8,8,3,0
+0.7,108,39,24,11,4,15,11,0.38461538461538464,11,13,4,0
+0.9,108,74,42,20,12,32,25,0.43243243243243246,25,30,10,2

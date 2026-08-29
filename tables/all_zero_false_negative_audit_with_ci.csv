@@ -1,0 +1,4 @@
+analysis_scope,target_class,annotated_n,unusable_n,class_uncertain_n,evaluable_n,manual_positive_n,manual_negative_n,manual_positive_rate,manual_positive_rate_ci_low,manual_positive_rate_ci_high
+all-zero false-negative audit,human,163,5,2,156,0,156,0.0,0.0,0.024032931437414928
+all-zero false-negative audit,animal,163,5,7,151,6,145,0.039735099337748346,0.01833606720540129,0.08397153788529008
+all-zero false-negative audit,vehicle,163,5,0,158,0,158,0.0,0.0,0.023735937927685864
